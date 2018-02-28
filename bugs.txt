@@ -1,0 +1,5 @@
+Fin code (1er jet)
+
+Bugs: 
+	* (Walkers se mangent)
+	* Walkers cassent le crystal
