@@ -68,7 +68,6 @@ int main()
         // processing
         
         moveWalkers(grid, rand());	//TODO: list of walkers ?
-        
         ifCloseToCrystal(grid);
         
         //

@@ -67,22 +67,26 @@ void moveWalkers(std::vector<std::vector<int>> &grid, int seed)
 				{
 					case 0: // north
 					{
-						grid[modulo(i-1,gridHeigth)][j] = 2;
+						if (grid[modulo(i-1,gridHeigth)][j] != 1) 
+						{grid[modulo(i-1,gridHeigth)][j] = 2;}
 						break;
 					}
 					case 1: // east
 					{
-						grid[i][modulo(j+1,gridWidth)] = 2;
+						if (grid[i][modulo(j+1,gridWidth)] != 1)
+						{grid[i][modulo(j+1,gridWidth)] = 2;}
 						break;
 					}
 					case 2: // south
 					{
-						grid[modulo(i+1,gridHeigth)][j] = 2;
+						if (grid[modulo(i+1,gridHeigth)][j] != 1)
+						{grid[modulo(i+1,gridHeigth)][j] = 2;}
 						break;
 					}
 					case 3: // west
 					{
-						grid[i][modulo(j-1,gridWidth)] = 2;
+						if (grid[i][modulo(j-1,gridWidth)] != 1)
+						{grid[i][modulo(j-1,gridWidth)] = 2;}
 						break;
 					}
 				}
