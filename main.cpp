@@ -10,19 +10,22 @@ int main()
 {
 	srand(15656);
 	
-	// create the Grid
+	// create the objects
 	
-	int gridWidth = 100;
-	int gridHeigth = 100;
+	int gridWidth = 320;
+	int gridHeigth = 320;
+	int maxWalkers = 2560;
 	
-	std::vector<int> zeros(gridWidth, 0);
-	std::vector<std::vector<int>> grid(gridHeigth, zeros);
+	std::vector<std::vector<int>> grid(gridHeigth, 
+		std::vector<int>(gridWidth,0));
+	std::vector<std::vector<int>> walkerList(maxWalkers, 
+		std::vector<int>(2,-1));  
 	
 	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2);
 	
 	// create the window
 	
-	sf::RenderWindow window(sf::VideoMode(400, 400), "Dendritic Cluster Growth");
+	sf::RenderWindow window(sf::VideoMode(640, 640), "Dendritic Cluster Growth");
 	sf::Image image;
 	sf::Texture texture;
 	sf::Sprite sprite;
@@ -62,13 +65,14 @@ int main()
         
         if (loopCounter%1 == 0)
         {
-        	addWalkerBoundary(grid, rand());
+        	addWalkerBoundary(walkerList, gridWidth, gridHeigth, rand());
         }
         
         // processing
         
-        moveWalkers(grid, rand());	//TODO: list of walkers ?
-        ifCloseToCrystal(grid);
+        moveWalkers(walkerList, gridWidth, gridHeigth, rand());
+        ifCloseToCrystal(grid, walkerList);
+        //TODO: Eliminates same walkers -> not if we move them independently
         
         //
        	std::chrono::system_clock::time_point finishProcessingTime =
@@ -89,7 +93,7 @@ int main()
         	window.clear(sf::Color::White);
         	image.create(gridWidth, gridHeigth, sf::Color::White);
 	
-			renderGrid(image, grid);
+			renderGrid(image, grid, walkerList);
 			texture.update(image);
 			sprite.setTexture(texture);
 			window.draw(sprite);

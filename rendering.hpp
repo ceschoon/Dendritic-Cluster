@@ -4,6 +4,7 @@
 #include <vector>
 #include "SFML/Graphics.hpp"
 
-void renderGrid(sf::Image &image, std::vector<std::vector<int>> &grid);
+void renderGrid(sf::Image &image, std::vector<std::vector<int>> &grid, 
+	std::vector<std::vector<int>> &walkerList);
 
 #endif

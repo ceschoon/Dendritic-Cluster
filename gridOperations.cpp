@@ -14,107 +14,110 @@ void placeInitialCrystal(std::vector<std::vector<int>> &grid, int x, int y)
 	grid[x][y] = 1;
 }
 
-void addWalkerBoundary(std::vector<std::vector<int>> &grid, int seed)
+void addWalkerBoundary(std::vector<std::vector<int>> &walkerList, 
+	int gridWidth, int gridHeigth, int seed)
 {
 	srand(seed);
 	
-	int gridWidth = grid[0].size();
-	int gridHeigth = grid.size();
-	
-	switch (rand()%4) 
+	bool flag = false;
+	for (int i=0; i<walkerList.size(); i++)
 	{
-		case 0: // north
+		if (walkerList[i][0] == -1)		// no walker there
 		{
-			int randNum2 = rand()%gridWidth;
-			grid[0][randNum2] = 2;
-			break;
+			switch (rand()%4) 
+			{
+				case 0: // north
+				{
+					walkerList[i][0] = 0;	// y position 
+					walkerList[i][1] = rand()%gridWidth;
+					break;
+				}
+				case 1: // east
+				{
+					walkerList[i][0] = rand()%gridHeigth;
+					walkerList[i][1] = gridWidth-1;
+					break;
+				}
+				case 2: // south
+				{
+					walkerList[i][0] = gridHeigth-1;
+					walkerList[i][1] = rand()%gridWidth;
+					break;
+				}
+				case 3: // west
+				{
+					walkerList[i][0] = rand()%gridHeigth;
+					walkerList[i][1] = 0;
+					break;
+				}
+			}
+			flag = true;
 		}
-		case 1: // east
-		{
-			int randNum2 = rand()%gridHeigth;
-			grid[randNum2][gridWidth-1] = 2;
-			break;
-		}
-		case 2: // south
-		{
-			int randNum2 = rand()%gridWidth;
-			grid[gridHeigth-1][randNum2] = 2;
-			break;
-		}
-		case 3: // west
-		{
-			int randNum2 = rand()%gridHeigth;
-			grid[randNum2][0] = 2;
-			break;
-		}
+		
+		if (flag){break;}
 	}
 }
 
-void moveWalkers(std::vector<std::vector<int>> &grid, int seed)
+void moveWalkers(std::vector<std::vector<int>> &walkerList, 
+	int gridWidth, int gridHeigth, int seed)
 {
 	srand(seed);
 	
-	int gridWidth = grid[0].size();
-	int gridHeigth = grid.size();
-	
-	for (int i=0; i<grid.size(); i++)
+	for (int i=0; i<walkerList.size(); i++)
 	{
-		for (int j=0; j<grid[0].size(); j++)
-		{	
-			if (grid[i][j] == 2)
-			{	
+		if (walkerList[i][0] != -1)
+		{
 				switch (rand()%4)
 				{
 					case 0: // north
 					{
-						if (grid[modulo(i-1,gridHeigth)][j] != 1) 
-						{grid[modulo(i-1,gridHeigth)][j] = 2;}
+						walkerList[i][0] = modulo(walkerList[i][0]-1, 		
+							gridHeigth);
 						break;
 					}
 					case 1: // east
 					{
-						if (grid[i][modulo(j+1,gridWidth)] != 1)
-						{grid[i][modulo(j+1,gridWidth)] = 2;}
+						walkerList[i][1] = modulo(walkerList[i][1]+1, 		
+							gridWidth);
 						break;
 					}
 					case 2: // south
 					{
-						if (grid[modulo(i+1,gridHeigth)][j] != 1)
-						{grid[modulo(i+1,gridHeigth)][j] = 2;}
+						walkerList[i][0] = modulo(walkerList[i][0]+1, 		
+							gridHeigth);
 						break;
 					}
 					case 3: // west
 					{
-						if (grid[i][modulo(j-1,gridWidth)] != 1)
-						{grid[i][modulo(j-1,gridWidth)] = 2;}
+						walkerList[i][1] = modulo(walkerList[i][1]-1, 		
+							gridWidth);
 						break;
 					}
 				}
-				
-				grid[i][j] = 0;
-			}
 		}
 	}
 }
 
-void ifCloseToCrystal(std::vector<std::vector<int>> &grid)
+void ifCloseToCrystal(std::vector<std::vector<int>> &grid,
+	std::vector<std::vector<int>> &walkerList)
 {	
 	int gridWidth = grid[0].size();
 	int gridHeigth = grid.size();
 	
-	for (int i=0; i<grid.size(); i++)
+	for (int i=0; i<walkerList.size(); i++)
 	{
-		for (int j=0; j<grid[0].size(); j++)
+		int x = walkerList[i][0];
+		int y = walkerList[i][1];
+		
+		if (x!=-1)
 		{
-			if (grid[i][j] == 2)
-			{
-				if (grid[modulo(i-1,gridHeigth)][j]==1 || 
-					grid[i][modulo(j+1,gridWidth)] ==1 || 
-					grid[modulo(i+1,gridHeigth)][j]==1 || 
-					grid[i][modulo(j-1,gridWidth)] ==1)
-				{
-					grid[i][j] = 1;
-				}
+			if (grid[modulo(y-1,gridHeigth)][x]==1 || 
+				grid[y][modulo(x+1,gridWidth)] ==1 || 
+				grid[modulo(y+1,gridHeigth)][x]==1 || 
+				grid[y][modulo(x-1,gridWidth)] ==1)
+			{	
+				grid[x][y] = 1;
+				walkerList[i] = {-1,-1};
 			}
 		}
 	}
