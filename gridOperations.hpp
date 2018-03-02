@@ -11,5 +11,7 @@ void moveWalkers(std::vector<std::vector<int>> &walkerList,
 	int gridWidth, int gridHeigth, int seed);
 void ifCloseToCrystal(std::vector<std::vector<int>> &grid,
 	std::vector<std::vector<int>> &walkerList);
+bool isClusterBigEnough(std::vector<std::vector<int>> &grid, 
+	int minDistanceToBorder);
 
 #endif

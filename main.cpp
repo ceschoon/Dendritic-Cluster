@@ -8,13 +8,13 @@
 
 int main()
 {
-	srand(15656);
+	srand(time(NULL));
 	
-	// create the objects
+	// create the objects and initialise
 	
 	int gridWidth = 320;
 	int gridHeigth = 320;
-	int maxWalkers = 2560;
+	int maxWalkers = (gridWidth*gridHeigth)/40+1;	// a good concentration
 	
 	std::vector<std::vector<int>> grid(gridHeigth, 
 		std::vector<int>(gridWidth,0));
@@ -22,10 +22,6 @@ int main()
 		std::vector<int>(2,-1));  
 	
 	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2);
-	placeInitialCrystal(grid, gridWidth/2+1, gridHeigth/2);
-	placeInitialCrystal(grid, gridWidth/2-1, gridHeigth/2);
-	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2+1);
-	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2-1);
 	
 	// create the window
 	
@@ -44,21 +40,25 @@ int main()
 	long loopProcessingTime = 0;
 	long loopRenderingTime = 0;
 	int loopCounter = 0;
+	bool doProcess = true;
 	
-	while (window.isOpen())
-	{
+	while (window.isOpen() && doProcess)
+	{	
 		std::chrono::system_clock::time_point start =
 			std::chrono::system_clock::now();
 			
 		// event handling
 		
-		sf::Event event;
-        while (window.pollEvent(event))
-        {
-			if (event.type == sf::Event::Closed)
+		if (loopCounter%100 == 0)
+		{
+			sf::Event event;
+        	while (window.pollEvent(event))
         	{
-        	    window.close();
-        	}
+				if (event.type == sf::Event::Closed)
+        		{
+        		    window.close();
+        		}
+       		}
         }
         
         // periodically add a walker
@@ -76,7 +76,7 @@ int main()
         
         moveWalkers(walkerList, gridWidth, gridHeigth, rand());
         ifCloseToCrystal(grid, walkerList);
-        //TODO: Eliminates same walkers -> not if we move them independently
+        if (isClusterBigEnough(grid, 5)) {doProcess = false;}
         
         //
        	std::chrono::system_clock::time_point finishProcessingTime =
@@ -157,6 +157,42 @@ int main()
 			  << " milliseconds" << std::endl;
 			  
 	std::cout << "Number of loops: " << loopCounter << std::endl;
+	
+	while (window.isOpen())
+	{
+		// event handling
+		
+		if (loopCounter%100 == 0)
+		{
+			sf::Event event;
+        	while (window.pollEvent(event))
+        	{
+				if (event.type == sf::Event::Closed)
+        		{
+        		    window.close();
+        		}
+       		}
+        }
+		
+		// rendering
+        
+        if (loopCounter%100 == 0)
+        {
+        	window.clear(sf::Color::White);
+        	image.create(gridWidth, gridHeigth, sf::Color::White);
+	
+			renderGrid(image, grid, walkerList);
+			texture.update(image);
+			sprite.setTexture(texture);
+			window.draw(sprite);
+	
+			window.setView(view);
+	        
+	        window.display();
+        }
+        
+        loopCounter++;
+	}
 		
 	return 0;
 }

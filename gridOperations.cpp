@@ -20,21 +20,17 @@ int numberOfNeighbours(std::vector<std::vector<int>> &grid, int x, int y)
 	if(grid[modulo(y+1,gridHeigth)][x]==1){numNeighbours++;}
 	if(grid[y][modulo(x-1,gridWidth )]==1){numNeighbours++;}
 	
-	if(grid[modulo(y-1,gridHeigth)][modulo(x-1,gridWidth )]==1)
-		{numNeighbours++;}
-	if(grid[modulo(y+1,gridHeigth)][modulo(x-1,gridWidth )]==1)
-		{numNeighbours++;}
-	if(grid[modulo(y-1,gridHeigth)][modulo(x+1,gridWidth )]==1)
-		{numNeighbours++;}
-	if(grid[modulo(y+1,gridHeigth)][modulo(x+1,gridWidth )]==1)
-		{numNeighbours++;}
-	
 	return numNeighbours;
 }
 
 void placeInitialCrystal(std::vector<std::vector<int>> &grid, int x, int y)
 {
 	grid[x][y] = 1;
+	
+	grid[x+1][y] = 1;
+	grid[x][y+1] = 1;
+	grid[x-1][y] = 1;
+	grid[x][y-1] = 1;
 }
 
 void addWalkerBoundary(std::vector<std::vector<int>> &walkerList, 
@@ -134,12 +130,43 @@ void ifCloseToCrystal(std::vector<std::vector<int>> &grid,
 		
 		if (x!=-1)
 		{
-			if (numberOfNeighbours(grid, x, y)>=2)
+			if (numberOfNeighbours(grid, x, y)>=1)
 			{	
-				grid[x][y] = 1;
+				grid[y][x] = 1;
 				walkerList[i] = {-1,-1};
 			}
 		}
 	}
+}
+
+bool isClusterBigEnough(std::vector<std::vector<int>> &grid, 
+	int minDistanceToBorder)
+{
+	bool clusterBigEnough = false;
+	
+	int gridWidth = grid[0].size();
+	int gridHeigth = grid.size();
+	
+	for (int i=0; i<minDistanceToBorder; i++)
+	{
+		for (int j=0; j<gridWidth; j++) 	// north
+		{
+			if (grid[i][j] == 1){clusterBigEnough = true;}
+		}
+		for (int j=0; j<gridHeigth; j++) 	// east
+		{
+			if (grid[j][gridWidth-1-i] == 1){clusterBigEnough = true;}
+		}
+		for (int j=0; j<gridWidth; j++) 	// south
+		{
+			if (grid[gridHeigth-1-i][j] == 1){clusterBigEnough = true;}
+		}
+		for (int j=0; j<gridHeigth; j++) 	// west
+		{
+			if (grid[j][i] == 1){clusterBigEnough = true;}
+		}
+	}
+	
+	return clusterBigEnough;
 }
 
