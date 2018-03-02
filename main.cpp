@@ -22,6 +22,10 @@ int main()
 		std::vector<int>(2,-1));  
 	
 	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2);
+	placeInitialCrystal(grid, gridWidth/2+1, gridHeigth/2);
+	placeInitialCrystal(grid, gridWidth/2-1, gridHeigth/2);
+	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2+1);
+	placeInitialCrystal(grid, gridWidth/2, gridHeigth/2-1);
 	
 	// create the window
 	

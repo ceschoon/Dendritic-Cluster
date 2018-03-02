@@ -9,6 +9,29 @@ int modulo(int a, int b)
 	return c;
 }
 
+int numberOfNeighbours(std::vector<std::vector<int>> &grid, int x, int y)
+{
+	int gridWidth = grid[0].size();
+	int gridHeigth = grid.size();
+	int numNeighbours = 0;
+	
+	if(grid[modulo(y-1,gridHeigth)][x]==1){numNeighbours++;}
+	if(grid[y][modulo(x+1,gridWidth )]==1){numNeighbours++;}
+	if(grid[modulo(y+1,gridHeigth)][x]==1){numNeighbours++;}
+	if(grid[y][modulo(x-1,gridWidth )]==1){numNeighbours++;}
+	
+	if(grid[modulo(y-1,gridHeigth)][modulo(x-1,gridWidth )]==1)
+		{numNeighbours++;}
+	if(grid[modulo(y+1,gridHeigth)][modulo(x-1,gridWidth )]==1)
+		{numNeighbours++;}
+	if(grid[modulo(y-1,gridHeigth)][modulo(x+1,gridWidth )]==1)
+		{numNeighbours++;}
+	if(grid[modulo(y+1,gridHeigth)][modulo(x+1,gridWidth )]==1)
+		{numNeighbours++;}
+	
+	return numNeighbours;
+}
+
 void placeInitialCrystal(std::vector<std::vector<int>> &grid, int x, int y)
 {
 	grid[x][y] = 1;
@@ -111,10 +134,7 @@ void ifCloseToCrystal(std::vector<std::vector<int>> &grid,
 		
 		if (x!=-1)
 		{
-			if (grid[modulo(y-1,gridHeigth)][x]==1 || 
-				grid[y][modulo(x+1,gridWidth)] ==1 || 
-				grid[modulo(y+1,gridHeigth)][x]==1 || 
-				grid[y][modulo(x-1,gridWidth)] ==1)
+			if (numberOfNeighbours(grid, x, y)>=2)
 			{	
 				grid[x][y] = 1;
 				walkerList[i] = {-1,-1};
